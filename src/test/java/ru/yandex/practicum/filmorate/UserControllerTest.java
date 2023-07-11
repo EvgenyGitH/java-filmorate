@@ -56,7 +56,6 @@ public class UserControllerTest {
     @Test
     public void shoudReturnExBlankEmailOrWithoutEmailSimbol() {
         //   User user = new User(1, "email@email.com", "UserLogin1", "UserName", LocalDate.of(2010, 01, 01) );
-
         User user = User.builder()
                 .id(1)
                 .email(" ")

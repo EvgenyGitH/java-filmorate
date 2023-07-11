@@ -21,7 +21,7 @@ public class UserController {
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) throws ValidationException {
-        if (user.getEmail().isBlank() || !user.getEmail().contains("@") || user.getEmail()==null) {
+        if (user.getEmail().isBlank() || !user.getEmail().contains("@") || user.getEmail() == null) {
             log.error("электронная почта не может быть пустой и должна содержать символ @: {}", user.getEmail());
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");
         }
@@ -29,7 +29,7 @@ public class UserController {
             log.error("логин не может быть пустым и содержать пробелы: {}", user.getLogin());
             throw new ValidationException("логин не может быть пустым и содержать пробелы");
         }
-        if (user.getName()==null || user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
@@ -45,10 +45,10 @@ public class UserController {
 
     @PutMapping
     public User updateFilm(@Valid @RequestBody User user) throws ValidationException {
-        if (!users.containsKey(user.getId())){
+        if (!users.containsKey(user.getId())) {
             throw new ValidationException("фильм с указанным ID не существует");
         }
-        if (user.getEmail().isBlank() || !user.getEmail().contains("@") || user.getEmail()==null ) {
+        if (user.getEmail().isBlank() || !user.getEmail().contains("@") || user.getEmail() == null) {
             log.error("электронная почта не может быть пустой и должна содержать символ @: {}", user.getEmail());
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");
         }
@@ -56,7 +56,7 @@ public class UserController {
             log.error("логин не может быть пустым и содержать пробелы: {}", user.getLogin());
             throw new ValidationException("логин не может быть пустым и содержать пробелы");
         }
-        if (user.getName()==null || user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {

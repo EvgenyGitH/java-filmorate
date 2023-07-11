@@ -35,9 +35,7 @@ public class FilmControllerTests {
 
     @Test
     public void addFilmCorrectData() throws Exception {
-
         //  Film film1 = new Film(1, "Movie-1", "Comedy", LocalDate.of(2021, 12, 21), 600);
-
         Film film0 = Film.builder()
                 .id(1)
                 .name("Movie-1")
