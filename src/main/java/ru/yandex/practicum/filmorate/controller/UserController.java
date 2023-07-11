@@ -20,7 +20,7 @@ public class UserController {
     private int currentUserId = 1;
 
     @PostMapping
-    public User addUser( @RequestBody User user) throws ValidationException {
+    public User addUser(@Valid @RequestBody User user) throws ValidationException {
         if (user.getEmail().isBlank() || !user.getEmail().contains("@") || user.getEmail()==null) {
             log.error("электронная почта не может быть пустой и должна содержать символ @: {}", user.getEmail());
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");
@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateFilm( @RequestBody User user) throws ValidationException {
+    public User updateFilm(@Valid @RequestBody User user) throws ValidationException {
         if (!users.containsKey(user.getId())){
             throw new ValidationException("фильм с указанным ID не существует");
         }
