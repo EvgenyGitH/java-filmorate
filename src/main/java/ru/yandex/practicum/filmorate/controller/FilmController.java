@@ -8,10 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
-import javax.websocket.server.PathParam;
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -42,22 +39,23 @@ public class FilmController {
         return filmService.allFilms().values();
     }
 
-    @GetMapping ("/{filmId}")
-    public Film getFilmById (@PathVariable int filmId){
+    @GetMapping("/{filmId}")
+    public Film getFilmById(@PathVariable int filmId) {
         return filmService.getFilmById(filmId);
     }
 
-    @PutMapping ("/{filmId}/like/{userId}")
-    public Film addLikeFilm (@PathVariable int filmId,  @PathVariable  Long userId ){
+    @PutMapping("/{filmId}/like/{userId}")
+    public Film addLikeFilm(@PathVariable int filmId, @PathVariable Long userId) {
         return filmService.addLikeFilm(filmId, userId);
     }
 
-    @DeleteMapping ("/{filmId}/like/{userId}")
-    public Film deleteLikeFilm (@PathVariable int filmId, @PathVariable Long userId ){
+    @DeleteMapping("/{filmId}/like/{userId}")
+    public Film deleteLikeFilm(@PathVariable int filmId, @PathVariable Long userId) {
         return filmService.deleteLikeFilm(filmId, userId);
     }
-    @GetMapping ("/popular")
-    public List <Film> getPopularFilms (@RequestParam (defaultValue = "10")  int count){
+
+    @GetMapping("/popular")
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
         return filmService.getPopularFilms(count);
     }
 
