@@ -5,15 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @Builder
 public class User {
-    private int id;
+    private Long id;
     private String email;
     private String login;
     private String name;
     private LocalDate birthday;
+    private Set<Long> friends;
 
 }
