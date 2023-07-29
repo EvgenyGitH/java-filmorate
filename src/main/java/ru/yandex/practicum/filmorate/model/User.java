@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 @Builder
 public class User {
     private Long id;
+    @Email(message = "Email - не соответствует формат")
     private String email;
     private String login;
     private String name;

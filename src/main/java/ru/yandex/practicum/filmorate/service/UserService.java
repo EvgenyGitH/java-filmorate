@@ -14,7 +14,7 @@ import java.util.*;
 @Slf4j
 @Service
 public class UserService {
-    private UserStorage userStorage;
+    private final UserStorage userStorage;
 
     @Autowired
     public UserService(UserStorage userStorage) {
@@ -26,7 +26,7 @@ public class UserService {
             log.error("электронная почта не может быть пустой и должна содержать символ @: {}", user.getEmail());
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");
         }
-        if (user.getEmail() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+        if (user.getEmail() == null || user.getLogin().isBlank()) {
             log.error("логин не может быть пустым и содержать пробелы: {}", user.getLogin());
             throw new ValidationException("логин не может быть пустым и содержать пробелы");
         }
@@ -40,12 +40,14 @@ public class UserService {
     }
 
     public User addUser(User user) throws ValidationException {
+        validateUser(user);
         user.setFriends(new HashSet<>());
         return userStorage.addUser(user);
 
     }
 
     public User updateUser(User user) throws ValidationException {
+        validateUser(user);
         Set<Long> friends = userStorage.getUserById(user.getId()).getFriends();
         user.setFriends(friends);
         return userStorage.updateUser(user);

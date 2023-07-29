@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class FilmService {
 
-    private FilmStorage filmStorage;
-    private UserStorage userStorage;
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
     @Autowired
     public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
@@ -35,11 +35,11 @@ public class FilmService {
             throw new ValidationException("название не может быть пустым");
 
         }
-        if (film.getDescription().length() > 200) {
+        if (film.getDescription() == null || film.getDescription().length() > 200) {
             log.error("максимальная длина описания — 200 символов");
             throw new ValidationException("максимальная длина описания — 200 символов");
         }
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+        if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             log.error("дата релиза — не раньше 28 декабря 1895 года: {}", film.getReleaseDate());
             throw new ValidationException("дата релиза — не раньше 28 декабря 1895 года");
 
@@ -80,8 +80,9 @@ public class FilmService {
         if (!userStorage.allUser().containsKey(userId)) {
             throw new UserNotFoundException("User Not Found");
         }
-        filmStorage.getFilmById(filmId).getLikes().add(userId);
-        return filmStorage.getFilmById(filmId);
+        Film film = filmStorage.getFilmById(filmId);
+        film.getLikes().add(userId);
+        return film;
     }
 
     public Film deleteLikeFilm(int filmId, Long userId) {
@@ -91,8 +92,9 @@ public class FilmService {
         if (!userStorage.allUser().containsKey(userId)) {
             throw new UserNotFoundException("User Not Found");
         }
-        filmStorage.getFilmById(filmId).getLikes().remove(userId);
-        return filmStorage.getFilmById(filmId);
+        Film film = filmStorage.getFilmById(filmId);
+        film.getLikes().remove(userId);
+        return film;
     }
 
 
