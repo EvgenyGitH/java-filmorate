@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -45,33 +46,36 @@ public class FilmControllerTests {
 
     @Test
     public void addFilmCorrectData() throws Exception {
-        //  Film film1 = new Film(1, "Movie-1", "Comedy", LocalDate.of(2021, 12, 21), 600);
+
         Film film0 = Film.builder()
-                .id(1)
-                .name("Movie-1")
-                .description("Comedy")
-                .releaseDate(LocalDate.of(2021, 12, 21))
-                .duration(600)
-                .likes(new HashSet<>())
+                .name("movie1")
+                .description("movie1")
+                .releaseDate(LocalDate.of(2001, 01, 01))
+                .duration(121)
+                .mpa(new Mpa(2))
                 .build();
 
         mockMvc.perform(
                         post("/films")
                                 .content(objectMapper.writeValueAsString(film0))
                                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(200));
 
-                .andExpect(status().is(200))
-                .andExpect(content().json(objectMapper.writeValueAsString(film0)));
+        mockMvc.perform(get("/films/1"))
+                .andDo(print())
+                .andExpect(content().string("{\"id\":1,\"name\":\"movie1\",\"description\":\"movie1\",\"releaseDate\":\"2001-01-01\",\"duration\":121,\"genres\":[],\"mpa\":{\"id\":2,\"name\":\"PG\"},\"likes\":[]}"));
+
     }
 
 
     @Test
     public void shoudReturnExReleaseDateAddFilm() throws Exception {
-        Film film = new Film(1, "Movie-1", "Comedy", LocalDate.of(1021, 12, 21), 600, new HashSet<>());
-       /* Assertions.assertThrows(Exception.class, () -> this.mockMvc.perform(post("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(film1)))
-                .andDo(print()));*/
+        Film film = Film.builder()
+                .name("Movie-1")
+                .description("Comedy")
+                .releaseDate(LocalDate.of(1021, 12, 21))
+                .duration(600)
+                .build();
 
         ResultActions response = mockMvc.perform(post("/films")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -85,7 +89,14 @@ public class FilmControllerTests {
 
     @Test
     public void shouldReturnExBlankName() throws Exception {
-        Film film = new Film(1, " ", "Comedy", LocalDate.of(2021, 12, 21), 600, new HashSet<>());
+        Film film = Film.builder()
+                .name(" ")
+                .description("Comedy")
+                .releaseDate(LocalDate.of(2021, 12, 21))
+                .duration(600)
+                .likes(new HashSet<>())
+                .build();
+
         ResultActions response = mockMvc.perform(post("/films")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(film)));
@@ -96,7 +107,12 @@ public class FilmControllerTests {
 
     @Test
     public void shouldReturnExNegativeDuration() throws Exception {
-        Film film = new Film(1, "Movie-1", "Comedy", LocalDate.of(2021, 12, 21), -600, new HashSet<>());
+        Film film = Film.builder()
+                .name("Movie-1")
+                .description("Comedy")
+                .releaseDate(LocalDate.of(2021, 12, 21))
+                .duration(-600)
+                .build();
         ResultActions response = mockMvc.perform(post("/films")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(film)));
@@ -107,7 +123,14 @@ public class FilmControllerTests {
 
     @Test
     public void shouldReturnExLongDescription() throws Exception {
-        Film film = new Film(1, "Movie-1", "Comedy".repeat(210), LocalDate.of(2021, 12, 21), -600, new HashSet<>());
+        Film film = Film.builder()
+                .name("Movie-1")
+                .description("Comedy".repeat(210))
+                .releaseDate(LocalDate.of(2021, 12, 21))
+                .duration(600)
+                .likes(new HashSet<>())
+                .build();
+
         ResultActions response = mockMvc.perform(post("/films")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(film)));
@@ -125,37 +148,51 @@ public class FilmControllerTests {
 
     @Test
     public void shouldGetFilmById() throws Exception {
-        Film film = new Film(1, "Movie-1", "Comedy", LocalDate.of(2021, 12, 21), 600, new HashSet<>());
+        Film film = Film.builder()
+                .name("movie1")
+                .description("movie1")
+                .releaseDate(LocalDate.of(2001, 01, 01))
+                .duration(121)
+                .mpa(new Mpa(2))
+                .build();
         mockMvc.perform(post("/films")
                         .content(objectMapper.writeValueAsString(film))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
 
-
-        mockMvc.perform(get("/films/1"))
+        mockMvc.perform(get("/films/3"))
                 .andDo(print())
-                .andExpect(content().string("{\"id\":1,\"name\":\"Movie-1\",\"description\":\"Comedy\",\"releaseDate\":\"2021-12-21\",\"duration\":600,\"likes\":[1]}"));
+                .andExpect(content().string("{\"id\":3,\"name\":\"movie1\",\"description\":\"movie1\",\"releaseDate\":\"2001-01-01\",\"duration\":121,\"genres\":[],\"mpa\":{\"id\":2,\"name\":\"PG\"},\"likes\":[]}"));
 
     }
 
     @Test
     public void shouldPutLikeToFilm() throws Exception {
-        Film film = new Film(1, "Movie-1", "Comedy", LocalDate.of(2021, 12, 21), 100, new HashSet<>());
+        Film film = Film.builder()
+                .name("movie1")
+                .description("movie1")
+                .releaseDate(LocalDate.of(2001, 01, 01))
+                .duration(121)
+                .mpa(new Mpa(2))
+                .build();
         mockMvc.perform(post("/films")
                         .content(objectMapper.writeValueAsString(film))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
 
-        User user = new User(1L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01), new HashSet<>());
+        User user = new User(1L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
 
-        mockMvc.perform(put("http://localhost:8081/films/1/like/1"))
+        mockMvc.perform(put("http://localhost:8081/films/2/like/1"))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string("{\"id\":1,\"name\":\"Movie-1\",\"description\":\"Comedy\",\"releaseDate\":\"2021-12-21\",\"duration\":600,\"likes\":[1]}"));
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/films/2"))
+                .andDo(print())
+                .andExpect(content().string("{\"id\":2,\"name\":\"movie1\",\"description\":\"movie1\",\"releaseDate\":\"2001-01-01\",\"duration\":121,\"genres\":[],\"mpa\":{\"id\":2,\"name\":\"PG\"},\"likes\":[1]}"));
 
     }
 

@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
@@ -6,13 +7,15 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    HashMap<Long, User> users = new HashMap<>();
+    List<User> users = new ArrayList<>();
 
     private Long currentUserId = 1L;
 
@@ -20,35 +23,43 @@ public class InMemoryUserStorage implements UserStorage {
     public User addUser(User user) throws ValidationException {
         user.setId(currentUserId);
         currentUserId++;
-        users.put(user.getId(), user);
+        users.add(user);
         log.info("Добавлен пользователь: {}", user);
         return user;
     }
 
     @Override
     public User updateUser(User user) {
-        if (!users.containsKey(user.getId())) {
+        if (getUserById(user.getId())==null) {
             throw new UserNotFoundException("Пользователь с указанным ID не существует");
         }
-        users.put(user.getId(), user);
+        users.add( user);
         log.info("Обновлен пользователь: {}", user);
         return user;
     }
 
     @Override
-    public HashMap<Long, User> allUser() {
+    public List<User> allUser() {
         log.info("Всего пользователей: {}", users.size());
         return users;
     }
 
     @Override
     public User getUserById(Long id) {
-        if (!users.containsKey(id)) {
+        User userById = null;
+        for (User user:users){
+            if (user.getId() == id){
+                userById = user;
+            }
+        }
+        if (userById == null) {  //!users.get(id)
             throw new UserNotFoundException("Пользователь не найден");
         }
         log.info("Пользователь найден по id: {}", id);
-        return users.get(id);
+        return userById;
+
     }
 
 
 }
+*/
