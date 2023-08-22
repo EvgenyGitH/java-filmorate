@@ -20,7 +20,6 @@ public class User {
     private String name;
     private LocalDate birthday;
 
-
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
         values.put("email", getEmail());

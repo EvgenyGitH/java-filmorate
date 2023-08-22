@@ -22,7 +22,6 @@ public class Film {
     private Mpa mpa;
     private Set<Long> likes;
 
-
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", getName());
