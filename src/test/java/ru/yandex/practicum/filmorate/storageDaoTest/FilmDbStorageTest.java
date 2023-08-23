@@ -85,7 +85,7 @@ public class FilmDbStorageTest {
     }
 
     @Test
-    public void TestUpdateFilm() throws ValidationException {
+    public void testUpdateFilm() throws ValidationException {
         Film addedFilm = filmStorage.addFilm(film1);
         upFilm.setId(addedFilm.getId());
         Film updatedFilm = filmStorage.updateFilm(upFilm);
