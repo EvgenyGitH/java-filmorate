@@ -17,7 +17,6 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.storage.dao.LikeStorage;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -63,8 +62,8 @@ public class LikeDbStorageTest {
         filmStorage.addFilm(film);
         userStorage.addUser(user1);
         userStorage.addUser(user2);
-        likeStorage.addLike(film.getId(),user1.getId());
-        likeStorage.addLike(film.getId(),user2.getId());
+        likeStorage.addLike(film.getId(), user1.getId());
+        likeStorage.addLike(film.getId(), user2.getId());
 
         assertThat(filmStorage.getFilmById(film.getId()).getLikes().size()).isEqualTo(2);
     }
@@ -74,20 +73,20 @@ public class LikeDbStorageTest {
         filmStorage.addFilm(film);
         userStorage.addUser(user1);
         userStorage.addUser(user2);
-        likeStorage.addLike(film.getId(),user1.getId());
-        likeStorage.addLike(film.getId(),user2.getId());
+        likeStorage.addLike(film.getId(), user1.getId());
+        likeStorage.addLike(film.getId(), user2.getId());
 
         assertThat(likeStorage.getLikes(film.getId()).size()).isEqualTo(2);
     }
 
 
     @Test
-    void TestDeleteById() throws ValidationException {
+    public void testDeleteById() throws ValidationException {
         filmStorage.addFilm(film);
         userStorage.addUser(user1);
         userStorage.addUser(user2);
-        likeStorage.addLike(film.getId(),user1.getId());
-        likeStorage.addLike(film.getId(),user2.getId());
+        likeStorage.addLike(film.getId(), user1.getId());
+        likeStorage.addLike(film.getId(), user2.getId());
 
         assertThat(likeStorage.getLikes(film.getId()).size()).isEqualTo(2);
         likeStorage.deleteLike(film.getId(), user2.getId());
@@ -96,12 +95,12 @@ public class LikeDbStorageTest {
     }
 
     @Test
-    void TestExistLike() throws ValidationException {
+    public void testExistLike() throws ValidationException {
         filmStorage.addFilm(film);
         userStorage.addUser(user1);
-        likeStorage.addLike(film.getId(),user1.getId());
+        likeStorage.addLike(film.getId(), user1.getId());
 
-        assertThat(likeStorage.existLike(film.getId(),user1.getId())).isTrue();
+        assertThat(likeStorage.existLike(film.getId(), user1.getId())).isTrue();
     }
 
 }
