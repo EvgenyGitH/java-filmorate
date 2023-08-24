@@ -149,7 +149,7 @@ public class FilmControllerTests {
     @Test
     public void shouldGetFilmById() throws Exception {
         Film film = Film.builder()
-                .name("movie1")
+                .name("movie1ById")
                 .description("movie1")
                 .releaseDate(LocalDate.of(2001, 01, 01))
                 .duration(121)
@@ -162,14 +162,14 @@ public class FilmControllerTests {
 
         mockMvc.perform(get("/films/3"))
                 .andDo(print())
-                .andExpect(content().string("{\"id\":3,\"name\":\"movie1\",\"description\":\"movie1\",\"releaseDate\":\"2001-01-01\",\"duration\":121,\"genres\":[],\"mpa\":{\"id\":2,\"name\":\"PG\"},\"likes\":[]}"));
+                .andExpect(content().string("{\"id\":3,\"name\":\"movie1ById\",\"description\":\"movie1\",\"releaseDate\":\"2001-01-01\",\"duration\":121,\"genres\":[],\"mpa\":{\"id\":2,\"name\":\"PG\"},\"likes\":[]}"));
 
     }
 
     @Test
     public void shouldPutLikeToFilm() throws Exception {
         Film film = Film.builder()
-                .name("movie1")
+                .name("movie1Like")
                 .description("movie1")
                 .releaseDate(LocalDate.of(2001, 01, 01))
                 .duration(121)
@@ -192,7 +192,7 @@ public class FilmControllerTests {
 
         mockMvc.perform(get("/films/2"))
                 .andDo(print())
-                .andExpect(content().string("{\"id\":2,\"name\":\"movie1\",\"description\":\"movie1\",\"releaseDate\":\"2001-01-01\",\"duration\":121,\"genres\":[],\"mpa\":{\"id\":2,\"name\":\"PG\"},\"likes\":[1]}"));
+                .andExpect(content().string("{\"id\":2,\"name\":\"movie1Like\",\"description\":\"movie1\",\"releaseDate\":\"2001-01-01\",\"duration\":121,\"genres\":[],\"mpa\":{\"id\":2,\"name\":\"PG\"},\"likes\":[1]}"));
 
     }
 

@@ -45,7 +45,7 @@ public class UserControllerTest {
     @Test
     public void addUserCorrectData() throws Exception {
         User user = User.builder()
-                .id(3L)
+                .id(2L)
                 .email("email@email.com")
                 .login("UserLogin1")
                 .name("UserName")
@@ -106,8 +106,8 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnNameFromLogin() throws Exception {
-        User user = new User(1L, "email@email.com", "UserLogin", null, LocalDate.of(2010, 01, 01));
-        User user1 = new User(6L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
+        User user = new User(5L, "emailNull@email.com", "UserLogin", null, LocalDate.of(2010, 01, 01));
+        User user1 = new User(5L, "emailNull@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -126,8 +126,8 @@ public class UserControllerTest {
     @Test
     public void shouldUpDateUser() throws Exception {
         User user = new User(3L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
-        User user1 = new User(2L, "newEmail@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
-        User user2 = new User(2L, "newEmail@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
+        User user1 = new User(1L, "newEmail@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
+        User user2 = new User(1L, "newEmail@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -156,25 +156,25 @@ public class UserControllerTest {
 
     @Test
     public void shouldAddFriend() throws Exception {
-        User user = new User(4L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
+        User user = new User(3L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());//4
 
-        User user1 = new User(5L, "e2mail@email.com", "User2Login", "User2Login", LocalDate.of(2000, 05, 05));
+        User user1 = new User(4L, "e2mail@email.com", "User2Login", "User2Login", LocalDate.of(2000, 05, 05));
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user1))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print());//5
+                .andDo(print());//4
 
-        this.mockMvc.perform(put("/users/4/friends/5"))
+        this.mockMvc.perform(put("/users/3/friends/4"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/users/4/friends"))
+        mockMvc.perform(get("/users/3/friends"))
                 .andDo(print())
-                .andExpect(content().string("[{\"id\":5,\"email\":\"e2mail@email.com\",\"login\":\"User2Login\",\"name\":\"User2Login\",\"birthday\":\"2000-05-05\"}]"));
+                .andExpect(content().string("[{\"id\":4,\"email\":\"e2mail@email.com\",\"login\":\"User2Login\",\"name\":\"User2Login\",\"birthday\":\"2000-05-05\"}]"));
 
     }
 

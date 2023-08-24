@@ -1,11 +1,9 @@
 package ru.yandex.practicum.filmorate.storage.dao.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
 import ru.yandex.practicum.filmorate.storage.dao.LikeStorage;
 
 import java.util.HashSet;
@@ -22,12 +20,8 @@ public class LikeDbStorage implements LikeStorage {
 
     @Override
     public void addLike(Long filmId, Long userId) {
-        try {
-            String sqlQuery = "INSERT INTO likes (film_id, user_id) values(?, ?)";
-            jdbcTemplate.update(sqlQuery, filmId, userId);
-        } catch (DataIntegrityViolationException exp) {
-            throw new IncorrectIdException("Фильм " + filmId + " не найден");
-        }
+        String sqlQuery = "INSERT INTO likes (film_id, user_id) values(?, ?)";
+        jdbcTemplate.update(sqlQuery, filmId, userId);
     }
 
     @Override

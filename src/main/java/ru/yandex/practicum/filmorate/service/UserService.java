@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.UpdateException;
+import ru.yandex.practicum.filmorate.exception.IncorrectIdException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -30,7 +30,7 @@ public class UserService {
             log.error("электронная почта не может быть пустой и должна содержать символ @: {}", user.getEmail());
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");
         }
-        if (user.getEmail() == null || user.getLogin().isBlank()) {
+        if (user.getLogin() == null || user.getLogin().isBlank()) {
             log.error("логин не может быть пустым и содержать пробелы: {}", user.getLogin());
             throw new ValidationException("логин не может быть пустым и содержать пробелы");
         }
@@ -43,11 +43,20 @@ public class UserService {
         }
     }
 
+    private void checkDoubleUser(User user) throws ValidationException {
+        List<User> getAllUsers = userStorage.allUser();
+        for (User getAllUser : getAllUsers) {
+            if ((getAllUser.getEmail().equals(user.getEmail())) && (getAllUser.getLogin().equals(user.getLogin()))) {
+                log.error("дублирование, Пользователь уже добавлен.");
+                throw new ValidationException("дублирование, Пользователь уже добавлен в хранилище.");
+            }
+        }
+    }
+
     public User addUser(User user) throws ValidationException {
         validateUser(user);
+        checkDoubleUser(user);
         return userStorage.addUser(user);
-
-
     }
 
     public User updateUser(User user) throws ValidationException {
@@ -87,7 +96,7 @@ public class UserService {
             friendStorage.confirm(userId, friendId);
             log.info("Пользователь: {} и пользователь: {} друзья", userId, friendId);
         } else {
-            throw new UpdateException("Пользователи уже являются друзьями");
+            throw new IncorrectIdException("Пользователи уже являются друзьями");
         }
         return user;
     }
@@ -114,8 +123,8 @@ public class UserService {
 
     public List<User> getCommonFriends(Long userId, Long otherId) {
         checkFriendsId(userId, otherId);
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(otherId);
+        userStorage.getUserById(userId);
+        userStorage.getUserById(otherId);
         log.debug("Запрос общих друзей пользователей: {} и {}", userId, otherId);
         return friendStorage.getCommonFriends(userId, otherId);
 
