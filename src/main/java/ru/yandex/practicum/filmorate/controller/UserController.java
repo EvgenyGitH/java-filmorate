@@ -33,7 +33,7 @@ public class UserController {
 
     @GetMapping
     public Collection<User> allUser() {
-        return userService.allUser().values();
+        return userService.allUser();
     }
 
     @GetMapping("/{id}")

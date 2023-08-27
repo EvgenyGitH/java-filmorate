@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,17 +42,14 @@ public class UserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @Test
     public void addUserCorrectData() throws Exception {
-
         User user = User.builder()
-                .id(3L)
+                .id(2L)
                 .email("email@email.com")
                 .login("UserLogin1")
                 .name("UserName")
                 .birthday(LocalDate.of(2010, 01, 01))
-                .friends(new HashSet<>())
                 .build();
 
         mockMvc.perform(
@@ -68,14 +64,11 @@ public class UserControllerTest {
 
     @Test
     public void shoudReturnExBlankEmailOrWithoutEmailSimbol() throws Exception {
-
         User user = User.builder()
-                .id(1L)
                 .email(" ")
                 .login("UserLogin1")
                 .name("UserName")
                 .birthday(LocalDate.of(2010, 01, 01))
-                .friends(new HashSet<>())
                 .build();
 
         ResultActions response = mockMvc.perform(post("/users")
@@ -83,13 +76,11 @@ public class UserControllerTest {
                 .content(objectMapper.writeValueAsString(user)));
         response.andExpect(MockMvcResultMatchers.status().is(400))
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));
-
     }
-
 
     @Test
     public void shouldReturnExBlankName() throws Exception {
-        User user = new User(1L, "email@email.com", " ", "UserName", LocalDate.of(2010, 01, 01), new HashSet<>());
+        User user = new User(1L, "email@email.com", " ", "UserName", LocalDate.of(2010, 01, 01));
 
         ResultActions response = mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -98,13 +89,12 @@ public class UserControllerTest {
         response.andExpect(content().json(objectMapper.writeValueAsString(Map.of("error",
                 "логин не может быть пустым и содержать пробелы"))));
 
-
     }
 
 
     @Test
     public void shouldReturnExDateOfBirthday() throws Exception {
-        User user = new User(1L, "email@email.com", "UserLogin", "UserName", LocalDate.of(2025, 01, 01), new HashSet<>());
+        User user = new User(1L, "email@email.com", "UserLogin", "UserName", LocalDate.of(2025, 01, 01));
 
         ResultActions response = mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -116,8 +106,8 @@ public class UserControllerTest {
 
     @Test
     public void shouldReturnNameFromLogin() throws Exception {
-        User user = new User(1L, "email@email.com", "UserLogin", null, LocalDate.of(2010, 01, 01), new HashSet<>());
-        User user1 = new User(6L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01), new HashSet<>());
+        User user = new User(5L, "emailNull@email.com", "UserLogin", null, LocalDate.of(2010, 01, 01));
+        User user1 = new User(5L, "emailNull@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -125,7 +115,6 @@ public class UserControllerTest {
                 .andExpect(status().is(200))
                 .andExpect(content().json(objectMapper.writeValueAsString(user1)));
     }
-
 
     @Test
     public void shouldReturnAllUsers() throws Exception {
@@ -136,14 +125,13 @@ public class UserControllerTest {
 
     @Test
     public void shouldUpDateUser() throws Exception {
-        User user = new User(3L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01), new HashSet<>());
-        User user1 = new User(2L, "newEmail@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01), new HashSet<>());
-        User user2 = new User(2L, "newEmail@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01), new HashSet<>());
+        User user = new User(3L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
+        User user1 = new User(1L, "newEmail@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
+        User user2 = new User(1L, "newEmail@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
-
 
         mockMvc.perform(put("/users")
                         .content(objectMapper.writeValueAsString(user1))
@@ -151,43 +139,42 @@ public class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(user2)));
-
     }
 
     @Test
     public void shouldGetUserById() throws Exception {
-        User user = new User(1L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01), new HashSet<>());
+        User user = new User(1L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
-
 
         mockMvc.perform(get("/users/1"))
                 .andDo(print())
                 .andExpect(content().json(objectMapper.writeValueAsString(user)));
-
     }
 
-
     @Test
-    public void shouldPutLikeToFilm() throws Exception {
-        User user = new User(1L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01), new HashSet<>());
+    public void shouldAddFriend() throws Exception {
+        User user = new User(3L, "email@email.com", "UserLogin", "UserLogin", LocalDate.of(2010, 01, 01));
         mockMvc.perform(post("/users")
                         .content(objectMapper.writeValueAsString(user))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print());
+                .andDo(print());//4
 
-        User user1 = new User(1L, "e2mail@email.com", "User2Login", "User2Login", LocalDate.of(2000, 05, 05), new HashSet<>());
+        User user1 = new User(4L, "e2mail@email.com", "User2Login", "User2Login", LocalDate.of(2000, 05, 05));
         mockMvc.perform(post("/users")
-                        .content(objectMapper.writeValueAsString(user))
+                        .content(objectMapper.writeValueAsString(user1))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print());
+                .andDo(print());//4
 
-        this.mockMvc.perform(put("/users/1/friends/2"))
+        this.mockMvc.perform(put("/users/3/friends/4"))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string("{\"id\":1,\"email\":\"email@email.com\",\"login\":\"UserLogin\",\"name\":\"UserLogin\",\"birthday\":\"2010-01-01\",\"friends\":[2]}"));
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/users/3/friends"))
+                .andDo(print())
+                .andExpect(content().string("[{\"id\":4,\"email\":\"e2mail@email.com\",\"login\":\"User2Login\",\"name\":\"User2Login\",\"birthday\":\"2000-05-05\"}]"));
 
     }
 
